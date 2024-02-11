@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     int headphonePlugCount = 0;
 
     private BroadcastReceiver headphonePlugReceiver = new BroadcastReceiver() {
+        public final static String CUSTOM_INTENT = "com.yanir.ex1601.HEADPHONES_PLUG_IN";
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AudioManager.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
@@ -23,10 +24,23 @@ public class MainActivity extends AppCompatActivity {
                 if (state == 1) {
                     headphonePlugCount++;
                     c2.setText("Headphone Plugged Count: " + headphonePlugCount);
+                    if(headphonePlugCount / 5 == 0) {
+                        Intent i = new Intent(CUSTOM_INTENT);
+                        i.putExtra("count", headphonePlugCount/5);
+                        context.sendBroadcast(i);
+                    }
                 }
             }
         }
     };
+
+    public void updateTheTextView_headphone(final String t) {
+        MainActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                c3.setText(t);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
